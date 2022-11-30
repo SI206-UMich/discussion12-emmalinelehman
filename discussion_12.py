@@ -17,7 +17,7 @@ def setUpDatabase(db_name):
 # CREATE TABLE FOR EMPLOYEE INFORMATION IN DATABASE AND ADD INFORMATION
 def create_employee_table(cur, conn):
     cur.execute("DROP TABLE IF EXISTS Employee")
-    cur.execute("CREATE TABLE Employee (id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT, hire_date TEXT, job_id TEXT, salary REAL)")
+    cur.execute("CREATE TABLE Employee (id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT, hire_date TEXT, job_id TEXT, salary INTEGER)")
     conn.commit()
 
 
@@ -38,9 +38,10 @@ def add_employee(filename, cur, conn):
 
 
 def job_and_hire_date(cur, conn):
-    #GET JOB AND HIRE_DATE INFORMATION
+    #GET JOB AND HIRE_DATE INFORMATION AND ADD TO TABLE
     visualization_salary_data(cur, conn)
-    
+
+
 
 
 
@@ -50,17 +51,29 @@ def problematic_salary(cur, conn):
 
 # TASK 4: VISUALIZATION
 def visualization_salary_data(cur, conn):
+    #GET JOB AND SALARY INFORMATION AND ADD TO TABLE
     cur.execute("SELECT job_id, salary FROM Employee")
-    job_and_salary = cur.fetchall()
-    job_id = []
-    salary = []
-    for job in job_and_salary:
-        job_id.append(job[0])
-        salary.append(job[1])
-    plt.bar(job_id, salary)
-    plt.xlabel("Job ID")
-    plt.ylabel("Salary")
-    plt.title("Salary by Job ID")
+    job_salary_data = cur.fetchall()
+    #print(job_salary_data)
+    #CREATE DICTIONARY WITH JOB_ID AS KEY AND SALARY AS VALUE
+    job_salary_dict = {}
+    for job_salary in job_salary_data:
+        if job_salary[0] not in job_salary_dict:
+            job_salary_dict[job_salary[0]] = [job_salary[1]]
+        else:
+            job_salary_dict[job_salary[0]].append(job_salary[1])
+    #print(job_salary_dict)
+    #CREATE DICTIONARY WITH JOB_ID AS KEY AND AVERAGE SALARY AS VALUE
+    job_avg_salary_dict = {}
+    for job in job_salary_dict:
+        job_avg_salary_dict[job] = sum(job_salary_dict[job])/len(job_salary_dict[job])
+    #print(job_avg_salary_dict)
+    #CREATE BAR GRAPH
+    plt.bar(range(len(job_avg_salary_dict)), job_avg_salary_dict.values(), align='center')
+    plt.xticks(range(len(job_avg_salary_dict)), list(job_avg_salary_dict.keys()))
+    plt.xlabel('Job ID')
+    plt.ylabel('Average Salary')
+    plt.title('Average Salary by Job ID')
     plt.show()
 
 class TestDiscussion12(unittest.TestCase):
