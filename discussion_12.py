@@ -104,7 +104,7 @@ class TestDiscussion12(unittest.TestCase):
 
 
 def main():
-    # SETUP DATABASE AND TABLE
+    # SETUP DATABASE AND TABLE 
     cur, conn = setUpDatabase('HR.db')
     create_employee_table(cur, conn)
 
