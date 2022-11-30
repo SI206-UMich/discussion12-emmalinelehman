@@ -32,14 +32,19 @@ def add_employee(filename, cur, conn):
     data = json.loads(file_data)
     # ADD EMPLOYEE INFORMATION TO TABLE
     for employee in data:
-        cur.execute("INSERT INTO Employee (first_name, last_name, hire_date, job_id, salary) VALUES (?,?,?,?,?)", (employee['first_name'], employee['last_name'], employee['hire_date'], employee['job_id'], employee['salary']))
-        conn.commit()
+        cur.execute("INSERT INTO Employee (id, first_name, last_name, hire_date, job_id, salary) VALUES (?, ?, ?, ?, ?, ?)", (employee["id"], employee["first_name"], employee["last_name"], employee["hire_date"], employee["job_id"], employee["salary"]))
+    conn.commit()
+
 
 
 
 def job_and_hire_date(cur, conn):
     #GET JOB AND HIRE_DATE INFORMATION AND ADD TO TABLE
-    visualization_salary_data(cur, conn)
+    cur.execute("SELECT job_id, hire_date FROM Employee")
+    job_hire_date_data = cur.fetchall()
+    #print(job_hire_date_data)
+    
+
 
 
 
